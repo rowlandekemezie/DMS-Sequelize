@@ -1,0 +1,32 @@
+{
+  "name": "document-management-system-v1",
+  "version": "1.0.0",
+  "description": "document system manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "node jasmine documentManagerSpec.js && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-rekemezie/document-management-system-v1.git"
+  },
+  "keywords": [
+    "ORM",
+    "sequelize",
+    "documentdatabase"
+  ],
+  "author": "Rowland Ekemezie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andela-rekemezie/document-management-system-v1/issues"
+  },
+  "homepage": "https://github.com/andela-rekemezie/document-management-system-v1#readme",
+  "dependencies": {
+    "pg": "^4.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.13.0"
+  },
+  "devDependencies": {
+    "jasmine": "^2.3.2"
+  }
+}
