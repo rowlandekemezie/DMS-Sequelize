@@ -7,10 +7,10 @@ var Sequelize = require('sequelize'),
 
 // define the model for users
  var User = db.define("User", {
+    
       firstName: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
         validate:{
           isAlpha: true
         }
@@ -18,7 +18,6 @@ var Sequelize = require('sequelize'),
       lastName: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
         validate:{
           isAlpha: true
         }
@@ -26,7 +25,6 @@ var Sequelize = require('sequelize'),
       role: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
       }
   }),
 
