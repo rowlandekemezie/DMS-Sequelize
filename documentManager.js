@@ -1,11 +1,10 @@
-
 /**
  * [Module dependencies]
  * @param  {[FUNCTION]} './schema' [description]
  * @return {[FUNCTION]}            [description]
  */
 var schema = require('./schema'),
-    strftime = require('strftime');
+  strftime = require('strftime');
 
 /**
  * [ instances of the schema]
@@ -14,7 +13,6 @@ var schema = require('./schema'),
 var User = schema.User,
     Role = schema.Role;
     Document = schema.Document;
-
 /**
  * [method to create  User if it does not exist]
  * @param  {[STRING]} fName [description]
@@ -22,13 +20,12 @@ var User = schema.User,
  * @param  {[STRING]} role  [description]
  * @return {[STRING]}       [description]
  */
-exports.createUser = function(fName, lName, role) {
-  if (role && fName && lName) {
-    Role.findOrCreate({
-      where: {
+exports.createUser = function(fName, lName, role, cb) {
+    Role.findOrCreate({ // error: keeps populating the roles even
+      where: {          // user is not created.
         title: role
       }
-    }).then(function(){
+    }).then(function() {
       User.findOne({
         where: {
           firstName: fName,
@@ -42,15 +39,12 @@ exports.createUser = function(fName, lName, role) {
             role: role
           };
           User.create(newUser);
-          return "New user created";
+          cb(null, "newUser "+fName+ " " +lName+" is created");
         } else {
-          return "User already exists";
+          cb(fName + " " +lName+ " already exists");
         }
       });
     });
-  } else {
-    return "invalid input";
-  }
 };
 //createUser('law', 'Bolu', 'AwesomeAdmin');
 
@@ -58,11 +52,11 @@ exports.createUser = function(fName, lName, role) {
  * [ method to get all users  from the Users table]
  * @return {[JSON]} [description]
  */
-exports.getAllUsers = function() {
-  User.findAll().then(function(users) {
-    return users;
+exports.getAllUsers = function(cb){
+ return User.findAll().then(function(users) {
+     cb(null, users);
   }).catch(function(err) {
-    return err;
+     cb(err);
   });
 };
 //
@@ -72,17 +66,18 @@ exports.getAllUsers = function() {
  * @param  {[STRING]} name [description]
  * @return {[JSON]}      [description]
  */
-exports.getAUser = function(name) {
-  splitName = name.split(' ');
-  User.findOne({
+exports.getAUser = function(fName, lName, cb) {
+return  User.findOne({
     where: {
-      fName: splitName[0],
-      lName: splitName[1]
+      firstName: fName,
+      lastName: lName
     }
   }).then(function(user) {
-    return user;
-  }).catch(function(err) {
-    return err;
+    if(!user) {
+      cb(fName +" "+lName+ " doesn't exist");
+    }else{
+      cb(null, user);
+    }
   });
 };
 // getAUser("Rowland Ekemezie");
@@ -92,16 +87,20 @@ exports.getAUser = function(name) {
  * @param  {[type]} postion [description]
  * @return {[type]}         [description]
  */
-exports.createRole = function(postion) {
+exports.createRole = function(postion, cb) {
   var newRole = {
     title: postion
   };
   Role.findOrCreate({
     where: newRole
-  }).then(function() {
-    return "role created sucessfully";
+  }).then(function(role) {
+    if (!role) {
+      cb(null, "role " + postion + " created sucessfully");
+    } else {
+      cb("Role already exist");
+    }
   }).catch(function(err) {
-    return err;
+    cb(err);
   });
 };
 //createRole("manager");
@@ -110,9 +109,27 @@ exports.createRole = function(postion) {
  * [method to get All roles]
  * @return {[JSON]} [description]
  */
-exports.getAllRoles = function() {
+exports.getAllRoles = function(cb) {
   return Role.findAll().then(function(roles) {
     return roles;
+  }).catch(function(err) {
+    return err;
+  });
+};
+
+
+exports.getARole = function(title, cb) {
+  return Role.findOne({
+    where: {
+      title: title
+    }
+  }).then(function(role) {
+    if (role) {
+      cb(null, role);
+    } else {
+      cb( title + " does not exist");
+    }
+
   }).catch(function(err) {
     return err;
   });
@@ -155,7 +172,9 @@ exports.getAllDocuments = function(limit) {
   var getDoc = {
     order: '"createdAt" DESC',
     limit: limit,
-    include: [{all: true}]
+    include: [{
+      all: true
+    }]
   };
   Document.findAll(getDoc).then(function(docs) {
     return docs;
@@ -172,16 +191,20 @@ exports.getAllDocuments = function(limit) {
  * @param  {[STRING]} role  [description]
  * @return {[JSON]}       [description]
  */
-exports.getDocByRole = function(limit, role) {
+exports.getDocByRole = function(role, limit) {
   var getRole = {
     title: role,
     limit: limit,
     order: '"datePublished" DESC',
-    include: [{all: true}]
+    include: [{
+      all: true
+    }]
   };
-  Document.findAll({where: getRole}).then(function(orderedRole){
+  Document.findAll({
+    where: getRole
+  }).then(function(orderedRole) {
     return orderedRole;
-  }).catch(function(err){
+  }).catch(function(err) {
     return err;
   });
 };
@@ -192,16 +215,20 @@ exports.getDocByRole = function(limit, role) {
  * @param  {[STRING]} date  [description]
  * @return {[JSON]}       [description]
  */
-exports.getDocByDate = function(limit, date) {
+exports.getDocByDate = function(date, limit) {
   var getDocDate = {
-    datePublished : date,
+    datePublished: date,
     limit: limit,
     order: '"updatedAt" DESC',
-    include: [{all: true}]
+    include: [{
+      all: true
+    }]
   };
-  Document.findAll({where: getDocDate}).then(function(docs){
+  Document.findAll({
+    where: getDocDate
+  }).then(function(docs) {
     return docs;
-  }).catch(function(err){
+  }).catch(function(err) {
     return err;
   });
 };
