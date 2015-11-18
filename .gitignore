@@ -1,3 +1,4 @@
 node_modules/
 bin/
 spec
+spec/support/jasmine.json
