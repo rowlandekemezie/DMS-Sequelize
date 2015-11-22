@@ -7,7 +7,7 @@ var Sequelize = require('sequelize'),
 
 // define the model for users
  var User = db.define("User", {
-    
+
       firstName: {
         type: Sequelize.STRING,
         allowNull: false,
