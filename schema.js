@@ -2,12 +2,22 @@
 
 // model dependencies and connection instance
 var Sequelize = require('sequelize'),
-  uri = "postgres://postgres:ALMIGHTY@localhost/ubuntu",
-  db = new Sequelize(uri);
+    uri = "postgres://postgres:ALMIGHTY@localhost/andela",
+    db = new Sequelize(uri);
 
 // define the model for users
  var User = db.define("User", {
-
+      userName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          isEmail: true
+        }
+      },
       firstName: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -45,7 +55,7 @@ var Sequelize = require('sequelize'),
       allowNull : false
     },
     datePublished: {
-      type: Sequelize.STRING,
+      type: Sequelize.DATE,
       allowNull: false,
       validate:{
         isDate: true
@@ -72,10 +82,7 @@ Document.belongsTo(Role, {
 // synchronize database with the model
 db.sync().then();
 
-/**
- * [schema exports]
- * @type {[type]}
- */
+// exporting the schema definitions
 exports.User = User;
 exports.Role = Role;
 exports.Document = Document;
