@@ -1,0 +1,153 @@
+#!/usr/bin/env node
+
+var program = require('commander'),
+ prettyjson = require('prettyjson'),
+ DMS = require('./../src/documentManager');
+
+program
+ .version('0.0.1')
+ .description('document system manager with sequelize');
+
+program
+ .command('createUser <userName> <email> <firstName> <lastName> <role> <password>')
+ .alias('cu')
+ .description('method to create a user if it does not exist')
+ .action(function(userName, email, firstName, lastName, role, password) {
+  DMS.createUser(userName, email, firstName, lastName, role, password, function(err, user) {
+    if (err) {
+     console.log(err);
+    } else {
+     console.log(JSON.stringify(user));
+    }
+   });
+ });
+
+program
+ .command('getAllUsers')
+ .alias('gau')
+ .description('method to get all users the User table')
+ .action(function() {
+  DMS.getAllUsers(function(err, users) {
+   if (err) {
+    console.log(err);
+   } else {
+    console.log(JSON.stringify(users));
+   }
+  });
+ });
+
+program
+ .command('getAUser <userName>')
+ .alias('gu')
+ .description('method to get a user')
+ .action(function(userName) {
+  DMS.getAUser(userName, function(err, user) {
+   if (err) {
+    console.log(err);
+   } else {
+    console.log(JSON.stringify(user));
+   }
+  });
+ });
+
+program
+ .command('createRole <position>')
+ .alias('cr')
+ .description('method to create a role to Role\'s table')
+ .action(function(position) {
+  DMS.createRole(position, function(err, role) {
+   if (err) {
+    console.log(err);
+   } else {
+    console.log(JSON.stringify(role));
+   }
+  });
+ });
+
+program
+ .command('getAllRoles')
+ .alias('gar')
+ .description('method to get all users from the Role\'s table')
+ .action(function() {
+  DMS.getAllRoles(function(err, roles) {
+   if (err) {
+    console.log(err);
+   } else {
+    console.log(JSON.stringify(roles));
+   }
+  });
+ });
+
+program
+ .command('getARole <role>')
+ .alias('gr')
+ .description('method to get a role')
+ .action(function(title) {
+  DMS.getARole(title, function(err, role) {
+   if (err) {
+    console.log(err);
+   } else if (!role) {
+    console.log(role + " does not exist");
+   } else {
+    console.log(JSON.stringify(role));
+   }
+  });
+ });
+
+program
+ .command('createDocument <docTitle> <accessRight>')
+ .alias('cd')
+ .description('method to create a document in the Document table')
+ .action(function(docTitle, accessRight) {
+  DMS.createDocument(docTitle, accessRight, function(err, doc) {
+   if (err) {
+    console.log(err);
+   } else {
+    console.log(JSON.stringify(doc));
+   }
+  });
+ });
+
+program
+ .command('getAllDocuments [limit]')
+ .alias('gad')
+ .description('method to get all documents')
+ .action(function(limit) {
+  DMS.getAllDocuments(limit, function(err, docs) {
+   if (err) {
+    console.log(err);
+   } else {
+    console.log(JSON.stringify(docs));
+   }
+  });
+ });
+
+program
+ .command('getDocByRole <role> [limit]')
+ .alias('gdr')
+ .description('method to get documents accesible by role')
+ .action(function(role, limit) {
+  DMS.getDocByRole(role, limit, function(err, docs) {
+   if (err) {
+    console.log(err);
+   } else {
+    console.log(JSON.stringify(docs));
+   }
+  });
+ });
+
+program
+ .command('getDocByDate <date> [limit]')
+ .alias('gdd')
+ .description('method to get document by date')
+ .action(function(date, limit) {
+  DMS.getDocByDate(date, limit, function(err, docs) {
+   if (err) {
+    console.log(err);
+   }  else {
+    console.log(JSON.stringify(docs));
+   }
+  });
+ });
+
+program.parse(process.argv);
