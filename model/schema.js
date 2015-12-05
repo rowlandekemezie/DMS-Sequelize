@@ -1,88 +1,97 @@
-(function() {'use strict';})();
+(function() {
+  'use strict';
+})();
 
 // model dependencies and connection instance
 var Sequelize = require('sequelize'),
-    validator = require('validator'),
-    uri = "postgres://postgres:ALMIGHTY@localhost/andela",
-    db = new Sequelize(uri);
+  validator = require('validator'),
+  uri = "postgres://postgres:ALMIGHTY@localhost/andela",
+  db = new Sequelize(uri, {
+    logging: false
+  });
 
 // define the model for users
- var User = db.define("User", {
-      userName: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
+var User = db.define("User", {
+    userName: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
 
-      email: {
-        type : Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          isEmail: true
-        }
-      },
-      firstName: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate:{
-          isAlpha: true
-        }
-      },
-
-      lastName: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate:{
-          isAlpha: true
-        }
-      },
-
-      role: {
-        type: Sequelize.STRING,
-        allowNull: false
+    email: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        isEmail: true
       }
+    },
+    firstName: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        isAlpha: true
+      }
+    },
+
+    lastName: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        isAlpha: true
+      }
+    },
+
+    role: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+
+    password: {
+      type: Sequelize.STRING,
+      allowNull: false
+    }
   }),
 
-// define the model for roles
- Role = db.define("Role", {
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        primaryKey : true,
-        unique: true
-      }
+  // define the model for roles
+  Role = db.define("Role", {
+    title: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      primaryKey: true,
+      unique: true
+    }
   }),
 
-// define the model for document
- Document = db.define("Document", {
-    docTitle : {
+  // define the model for document
+  Document = db.define("Document", {
+    docTitle: {
       type: Sequelize.TEXT,
-      allowNull : false
+      allowNull: false
     },
 
     datePublished: {
-      type: Sequelize.DATE,
+      type: Sequelize.STRING,
       allowNull: false,
-      validate:{
+      validate: {
         isDate: true
       }
     },
 
     AccessTo: {
       type: Sequelize.STRING,
-      allowNull:false
-    }
-});
+      allowNull: false
+    },
+  });
 
 // each user has a role with a foreignKey set as 'role'
 User.belongsTo(Role, {
-    foreignKey: 'role',
-    targetKey: 'title'
+  foreignKey: 'role',
+  targetKey: 'title'
 });
 
 // each document is accessible to a particular role
 Document.belongsTo(Role, {
-    foreignKey: 'AccessTo',
-    targetKey: 'title'
+  foreignKey: 'AccessTo',
+  targetKey: 'title'
 });
 
 // synchronize database with the model
