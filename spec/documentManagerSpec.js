@@ -64,12 +64,14 @@ describe("Document Management System", function() {
       expect(_users.user1.dataValues.userName).toBe('row');
       expect(_users.user1.dataValues.role).toBe('admin');
       expect(_users.user1.dataValues.email).toBe('row@gmail.com');
+      expect(_users.user1.dataValues.password).toBe('awesomeGod');
 
       expect(_users.user2.dataValues.firstName).toBe('jumai');
       expect(_users.user2.dataValues.userName).toBe('rukkky');
       expect(_users.user2.dataValues.lastName).toBe('auntie');
       expect(_users.user2.dataValues.role).toBe('admin');
       expect(_users.user2.dataValues.email).toBe('rukky@gmail.com');
+      expect(_users.user2.dataValues.password).toBe('greatness');
 
       done();
     });
