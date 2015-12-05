@@ -28,7 +28,7 @@ Document = schema.Document;
 
 exports.createUser = function(userName, email, fName, lName, role, password, cb) {
 
-  if (!fName && !lName) {
+  if (!(fName && lName)) {
     cb("Please provide your firstName and lastName");
   } else {
     return Role.findOne({
@@ -60,7 +60,7 @@ exports.createUser = function(userName, email, fName, lName, role, password, cb)
               cb(null, nuser);
             });
           } else {
-            cb("User already exists", null);
+            cb("User already exist", null);
           }
         });
       }
@@ -100,7 +100,7 @@ exports.getAUser = function(userName, cb) {
     if (user) {
       cb(null, user);
     } else {
-      cb("user does not exist", null);
+      cb("User does not exist", null);
     }
   }).catch(function(err) {
     cb(err, null);
@@ -122,7 +122,7 @@ exports.createRole = function(position, cb) {
     }
   }).then(function(role) {
     if (role) {
-      cb("role already exist", null);
+      cb("Role already exist", null);
     } else {
       Role.create({
         title: position
@@ -169,11 +169,37 @@ exports.getARole = function(title, cb) {
     if (role) {
       cb(null, role);
     } else {
-      cb("role does not exist", null);
+      cb("Role does not exist", null);
     }
   });
 };
 
+// method to format date 
+function dateGetter(){
+// create Date object from valid string inputs
+var datetime = new Date();
+
+// format the output
+var month = datetime.getMonth()+1;
+var day = datetime.getDate();
+var year = datetime.getFullYear();
+
+var hour = datetime.getHours();
+if (hour < 10)
+    hour = "0"+hour;
+
+var min = datetime.getMinutes();
+if (min < 10)
+    min = "0"+min;
+
+var sec = datetime.getSeconds();
+if (sec < 10)
+    sec = "0"+sec;
+
+// put it all togeter
+var dateTimeString = year+'-'+month+'-'+day+' '+hour+':'+min+':'+sec;
+  return dateTimeString;
+}
 /**
  * [method to create documents into the documents table]
  * @method createDocument
@@ -190,7 +216,7 @@ exports.createDocument = function(title, accessRight, cb) {
     }
   }).then(function(role) {
     if (role) {
-      return Document.findAll({
+      return Document.findOne({
         where: {
           docTitle: title,
           AccessTo: accessRight
@@ -200,7 +226,7 @@ exports.createDocument = function(title, accessRight, cb) {
           var newDoc = {
             docTitle: title,
             AccessTo: accessRight,
-            datePublished: strftime('%B %d, %Y %H:%M:%S', new Date())
+            datePublished:  dateGetter()
           };
           Document.create(newDoc).then(function(doc) {
             cb(null, doc);

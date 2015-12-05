@@ -1,4 +1,4 @@
-var dms = require('../documentManager');
+var dms = require('./../src/documentManager');
 var async = require('async');
 
 module.exports = {
@@ -99,6 +99,4 @@ module.exports = {
     }
    });
  }
-
-
 };
